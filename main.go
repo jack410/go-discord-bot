@@ -52,7 +52,17 @@ func main() {
 			}
 
 			selection := rand.Intn(len(proverbs))
-			_, err = s.ChannelMessageSend(m.ChannelID, proverbs[selection])
+
+			author := discordgo.MessageEmbedAuthor{
+				Name: "Rob Pike",
+				URL:  "https://go-proverb.github.io",
+			}
+			embed := discordgo.MessageEmbed{
+				Title:  proverbs[selection],
+				Author: &author,
+			}
+
+			_, err = s.ChannelMessageSendEmbed(m.ChannelID, &embed)
 			if err != nil {
 				log.Fatal(err)
 			}
