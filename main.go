@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	sess, err := discordgo.New("Bot MTE2NDExOTg1NzExNDEyMDIwMg.GJIDn0.F9lVQRtyj-CPmPlG1h_YYLwG-aR2AX8h9i404Y")
+	sess, err := discordgo.New("Bot MTE2NDExOTg1NzExNDEyMDIwMg.GJIDn0.F9lVQRtyj-CPmPlG1h_YYLwG-aR2AX8h9i404YA1")
 	if err != nil {
 		log.Fatal(err)
 	}
