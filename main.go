@@ -6,11 +6,17 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 )
 
+const prefix string = "!gobot"
+
 func main() {
-	sess, err := discordgo.New("Bot MTE2NDExOTg1NzExNDEyMDIwMg.GJIDn0.F9lVQRtyj-CPmPlG1h_YYLwG-aR2AX8h9i404Y")
+	// 获取 Discord 机器人令牌
+	token := os.Getenv("DISCORD_BOT_TOKEN")
+
+	sess, err := discordgo.New("Bot " + token)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -21,7 +27,14 @@ func main() {
 			return
 		}
 
-		if m.Content == "hello" {
+		args := strings.Split(m.Content, " ")
+
+		//如果不是以prefix开头则直接不处理
+		if args[0] != prefix {
+			return
+		}
+
+		if args[1] == "hello" {
 			_, err = s.ChannelMessageSend(m.ChannelID, "world!")
 			if err != nil {
 				log.Fatal(err)
