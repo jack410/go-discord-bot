@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"log"
+	"math/rand"
 	"os"
 	"os/signal"
 	"strings"
@@ -36,6 +37,22 @@ func main() {
 
 		if args[1] == "hello" {
 			_, err = s.ChannelMessageSend(m.ChannelID, "world!")
+			if err != nil {
+				log.Fatal(err)
+			}
+		}
+
+		if args[1] == "proverbs" {
+			proverbs := []string{
+				"Do not communicate by sharing memory; instead, share memory by communicating.",
+				"Concurrency is not parallelism.",
+				"Channels orchestrate; mutexes serialize.",
+				"Don't panic.",
+				"Cgo is not Go.",
+			}
+
+			selection := rand.Intn(len(proverbs))
+			_, err = s.ChannelMessageSend(m.ChannelID, proverbs[selection])
 			if err != nil {
 				log.Fatal(err)
 			}
