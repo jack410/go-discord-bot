@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
+	"github.com/joho/godotenv"
 	"log"
 	"math/rand"
 	"os"
@@ -14,6 +15,8 @@ import (
 const prefix string = "!gobot"
 
 func main() {
+	godotenv.Load()
+
 	// 获取 Discord 机器人令牌
 	token := os.Getenv("DISCORD_BOT_TOKEN")
 
