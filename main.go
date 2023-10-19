@@ -18,6 +18,24 @@ type Answers struct {
 	FavGame         string
 }
 
+func (a *Answers) ToMessageEmbed() discordgo.MessageEmbed {
+	fields := []*discordgo.MessageEmbedField{
+		{
+			Name:  "Favorite food",
+			Value: a.FavFood,
+		},
+		{
+			Name:  "Favorite game",
+			Value: a.FavFood,
+		},
+	}
+
+	return discordgo.MessageEmbed{
+		Title:  "New responses!",
+		Fields: fields,
+	}
+}
+
 var responses map[string]Answers = map[string]Answers{}
 
 const prefix string = "!gobot"
@@ -55,7 +73,9 @@ func main() {
 				return
 			} else {
 				answers.FavGame = m.Content
-				log.Printf("answers: %v, %v", answers.FavFood, answers.FavGame)
+				//log.Printf("answers: %v, %v", answers.FavFood, answers.FavGame)
+				embed := answers.ToMessageEmbed()
+				sess.ChannelMessageSendEmbed(answers.OriginChannelId, &embed)
 
 				delete(responses, m.ChannelID)
 			}
