@@ -122,6 +122,10 @@ func main() {
 		if args[1] == "prompt" {
 			UserPromptHandler(s, m)
 		}
+
+		if args[1] == "answers" {
+			AnswersHandler(db, s, m)
+		}
 	})
 
 	sess.Identify.Intents = discordgo.IntentsAllWithoutPrivileged
@@ -137,6 +141,39 @@ func main() {
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
 	<-sc
+}
+
+func AnswersHandler(db *sql.DB, s *discordgo.Session, m *discordgo.MessageCreate) {
+	spl := strings.Split(m.Content, " ")
+	if len(spl) < 3 {
+		s.ChannelMessageSend(m.ChannelID, "an ID must be provided. Ex: '!gobot answers 1'")
+		return
+	}
+	id, err := strconv.Atoi(spl[2])
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var recordId int64
+	var answerStr string
+	var userId int64
+
+	query := "select * from discord_message where id = ?"
+	row := db.QueryRow(query, id)
+
+	err = row.Scan(&recordId, &answerStr, &userId)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var answers Answers
+	err = json.Unmarshal([]byte(answerStr), &answers)
+	if err != nil {
+		log.Fatal(err)
+	}
+	answers.RecordId = recordId
+	embed := answers.ToMessageEmbed()
+	s.ChannelMessageSendEmbed(m.ChannelID, &embed)
 }
 
 func UserPromptResponseHandler(db *sql.DB, s *discordgo.Session, m *discordgo.MessageCreate) {
