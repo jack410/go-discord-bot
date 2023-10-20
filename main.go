@@ -66,6 +66,20 @@ func main() {
 	}
 	defer db.Close()
 
+	sess.AddHandler(func(s *discordgo.Session, r *discordgo.MessageReactionAdd) {
+		if r.Emoji.Name == ("♥️") {
+			s.GuildMemberRoleAdd(r.GuildID, r.UserID, "1164907140260057088")
+			s.ChannelMessageSend(r.ChannelID, fmt.Sprintf("%v has been added to %v", r.UserID, r.Emoji.Name))
+		}
+	})
+
+	sess.AddHandler(func(s *discordgo.Session, r *discordgo.MessageReactionRemove) {
+		if r.Emoji.Name == ("♥️") {
+			s.GuildMemberRoleRemove(r.GuildID, r.UserID, "1164907140260057088")
+			s.ChannelMessageSend(r.ChannelID, fmt.Sprintf("%v has been removed from %v", r.UserID, r.Emoji.Name))
+		}
+	})
+
 	sess.AddHandler(func(s *discordgo.Session, m *discordgo.MessageCreate) {
 		//发送信息的id和session的id一致则不处理信息直接退出
 		if m.Author.ID == s.State.User.ID {
